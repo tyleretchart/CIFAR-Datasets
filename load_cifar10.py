@@ -3,6 +3,7 @@ import time
 import os.path
 import urllib
 import tarfile
+import matplotlib.pyplot as plt
 
 class cifar10:
     
@@ -20,32 +21,43 @@ class cifar10:
             
         self.train = _training()
         self.test = _testing()
+        
+        data = _unpickle('cifar-10-batches-py/batches.meta')
+        self.key = data['label_names']
+        
+    def printPicture(self, subject):
+        subjectR = subject[0:1024].reshape(32, 32)
+        subjectG = subject[1024:2048].reshape(32, 32)
+        subjectB = subject[2048:3072].reshape(32, 32)
+        plotSubject = np.array([subjectR.T, subjectG.T, subjectB.T]).T
+        plt.imshow(plotSubject)
+        plt.tight_layout()
     
     
 class _training:
 
     def __init__(self):
-        data = _unpickle( 'cifar-10-batches-py/data_batch_1' )
+        data = _unpickle('cifar-10-batches-py/data_batch_1')
         self.features = data['data']
         self.labels = data['labels']
         self.labels = np.atleast_2d( self.labels ).T
 
-        data = _unpickle( 'cifar-10-batches-py/data_batch_2' )
+        data = _unpickle('cifar-10-batches-py/data_batch_2')
         self.features = np.append(self.features, data['data'], axis=0)
         data_labels = np.atleast_2d( data['labels'] ).T
         self.labels = np.append(self.labels, data_labels, axis=0)
        
-        data = _unpickle( 'cifar-10-batches-py/data_batch_3' )
+        data = _unpickle('cifar-10-batches-py/data_batch_3')
         self.features = np.append(self.features, data['data'], axis=0)
         data_labels = np.atleast_2d( data['labels'] ).T
         self.labels = np.append(self.labels, data_labels, axis=0)    
         
-        data = _unpickle( 'cifar-10-batches-py/data_batch_4' )
+        data = _unpickle('cifar-10-batches-py/data_batch_4')
         self.features = np.append(self.features, data['data'], axis=0)
         data_labels = np.atleast_2d( data['labels'] ).T
         self.labels = np.append(self.labels, data_labels, axis=0)
         
-        data = _unpickle( 'cifar-10-batches-py/data_batch_5' )
+        data = _unpickle('cifar-10-batches-py/data_batch_5')
         self.features = np.append(self.features, data['data'], axis=0)
         data_labels = np.atleast_2d( data['labels'] ).T
         self.labels = np.append(self.labels, data_labels, axis=0)
@@ -71,20 +83,10 @@ class _training:
 class _testing:
 
     def __init__(self):
-        data = _unpickle( 'cifar-10-batches-py/test_batch' )
+        data = _unpickle('cifar-10-batches-py/test_batch')
         self.features = data['data']
         self.labels = data['labels']
         self.labels = np.atleast_2d( self.labels ).T
-        self.key = {0:"airplane",
-                         1:"automobile",
-                         2:"bird",
-                         3:"cat",
-                         4:"deer",
-                         5:"dog",
-                         6:"frog",
-                         7:"horse",
-                         8:"ship",
-                         9:"truck"}
         
 
 def _unpickle(file):
